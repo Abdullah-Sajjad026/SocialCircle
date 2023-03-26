@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String  @id @default(cuid())
+  email          String  @unique
+  password       String
+  bio            String? @default("")
+  firstName      String? @map("first_name")
+  lastName       String? @map("last_name")
+  isActive       Boolean @default(true) @map("is_active")
+  profilePicture String  @map("profile_picture")
+  posts          Post[]
+  likes          Like[]
+}
+
+model Post {
+  id       String @id @default(cuid())
+  title    String
+  content  String
+  authorId String @map("author_id")
+  author   User   @relation(fields: [authorId], references: [id])
+  likes    Like[]
+}
+
+model Like {
+  id     String @id @default(cuid())
+  postId String @map("post_id")
+  post   Post   @relation(fields: [postId], references: [id])
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+// model User {
+//   id    String @id @default(cuid())
+//   fName String @map("first_name")
+//   lName String @map("last_name")
+//   car   Car?
+
+//   friendId String? @unique @map("friend_id")
+//   friend   User?   @relation("Friend", fields: [friendId], references: [id])
+//   friendOf User?   @relation("Friend")
+
+//   carBlogs CarBlog[]
+
+//   @@map("user")
+// }
+
+// model Car {
+//   id     String  @id @default(cuid())
+//   color  String
+//   bought Boolean @default(false)
+//   name   String
+//   userId String  @unique @map("user_id")
+//   user   User    @relation(fields: [userId], references: [id])
+
+//   @@map("car")
+// }
+
+// model CarBlog {
+//   id        String   @id @default(cuid())
+//   content   String
+//   createdAt DateTime @default(now()) @map("created_at")
+
+//   userId String @map("user_id")
+//   user   User   @relation(fields: [userId], references: [id])
+
+//   categories CarBlogCategory[]
+
+//   @@map("carblog")
+// }
+
+// model CarBlogCategory {
+//   id       String    @id @default(cuid())
+//   name     String
+//   carBlogs CarBlog[]
+
+//   @@map("carblog_category")
+// }
