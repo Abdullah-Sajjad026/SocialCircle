@@ -96,10 +96,36 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * @description Activate a user
+ * @access Private
+ * @route  GET /api/v1/users/dev/activate/:userId
+ * @todo   Remove this route in production
+ * @todo   Add a middleware to check if user is admin
+ */
 const activateUser = asyncHandler(async (req: Request, res: Response) => {
   const {userId} = req.params;
 
-  const user = await prisma.user.update({
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  // check if user exists
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  // check if user is already activated
+  if (user.isActive) {
+    res.status(400);
+    throw new Error("User is already activated");
+  }
+
+  // activate user
+  await prisma.user.update({
     where: {
       id: userId,
     },
@@ -108,9 +134,7 @@ const activateUser = asyncHandler(async (req: Request, res: Response) => {
     },
   });
 
-  if (user) {
-    res.status(200).json({message: "User activated successfully"});
-  }
+  res.status(200).json({message: "User activated successfully"});
 });
 
 export default Object.assign({}, {registerUser, loginUser, activateUser});

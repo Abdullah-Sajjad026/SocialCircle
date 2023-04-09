@@ -210,6 +210,11 @@ export const likePost = asyncHandler(async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * @desc    Get all posts
+ * @route   GET /api/v1/posts/all-posts
+ * @access  Public
+ */
 const getAllPosts = asyncHandler(async (req: Request, res: Response) => {
   const posts = await prisma.post.findMany({
     where: {
