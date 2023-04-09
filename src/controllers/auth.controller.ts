@@ -134,6 +134,16 @@ const activateUser = asyncHandler(async (req: Request, res: Response) => {
     },
   });
 
+  // activate user's posts
+  await prisma.post.updateMany({
+    where: {
+      authorId: userId,
+    },
+    data: {
+      isDeleted: false,
+    },
+  });
+
   res.status(200).json({message: "User activated successfully"});
 });
 
