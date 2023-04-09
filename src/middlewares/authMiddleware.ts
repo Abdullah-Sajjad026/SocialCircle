@@ -36,6 +36,7 @@ const protect = asyncHandler(
           res.status(400);
           throw new Error("The account doesn't exist");
         } else {
+          // req.user = user;
           req.body.user = user;
           next();
         }

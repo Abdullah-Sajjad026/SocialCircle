@@ -8,33 +8,42 @@ datasource db {
 }
 
 model User {
-  id             String  @id @default(cuid())
-  email          String  @unique
+  id             String   @id @default(cuid())
+  email          String   @unique
   password       String
-  bio            String? @default("")
-  firstName      String? @map("first_name")
-  lastName       String? @map("last_name")
-  isActive       Boolean @default(true) @map("is_active")
-  profilePicture String  @map("profile_picture")
+  bio            String?  @default("")
+  firstName      String   @map("first_name")
+  lastName       String?  @map("last_name")
+  isActive       Boolean  @default(true) @map("is_active")
+  profilePicture String?  @default("") @map("profile_picture")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @default(now()) @updatedAt @map("updated_at")
   posts          Post[]
   likes          Like[]
 }
 
 model Post {
-  id       String @id @default(cuid())
-  title    String
-  content  String
+  id        String  @id @default(cuid())
+  content   String
+  isPublic  Boolean @default(true) @map("is_public")
+  isDeleted Boolean @default(false) @map("is_deleted")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
   authorId String @map("author_id")
   author   User   @relation(fields: [authorId], references: [id])
   likes    Like[]
 }
 
 model Like {
-  id     String @id @default(cuid())
-  postId String @map("post_id")
-  post   Post   @relation(fields: [postId], references: [id])
-  userId String @map("user_id")
-  user   User   @relation(fields: [userId], references: [id])
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  postId    String   @map("post_id")
+  post      Post     @relation(fields: [postId], references: [id])
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 // model User {
