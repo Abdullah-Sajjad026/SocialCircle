@@ -112,6 +112,15 @@ const updatePost = asyncHandler(async (req: Request, res: Response) => {
     .json({message: "Post updated successfully", post: updatedPost});
 });
 
+/**
+ * @desc    Get a user's posts
+ * @route   GET /api/v1/posts/my-posts
+ * @access  Private
+ * @author  Abdullah-Sajjad026
+ * @todo    Add pagination
+ * @todo    Add sorting
+ *
+ */
 const getMyPosts = asyncHandler(async (req: Request, res: Response) => {
   const {user} = req.body;
   const posts = await prisma.post.findMany({
@@ -129,6 +138,7 @@ const getMyPosts = asyncHandler(async (req: Request, res: Response) => {
       author: {select: {firstName: true, lastName: true, profilePicture: true}},
       _count: {select: {likes: true}},
     },
+    // alternative to select
     // include: {
     //   _count: {select: {likes: true}},
     //   author: {select: {firstName: true, lastName: true, profilePicture: true}},
@@ -139,6 +149,12 @@ const getMyPosts = asyncHandler(async (req: Request, res: Response) => {
   res.status(200).json({message: "Posts fetched successfully", posts});
 });
 
+/**
+ * @desc    Like a post
+ * @route   POST /api/v1/posts/like/:postId
+ * @access  Private
+ * @author  Abdullah-Sajjad026
+ */
 export const likePost = asyncHandler(async (req: Request, res: Response) => {
   const {user} = req.body;
   const {postId} = req.params;
@@ -173,6 +189,7 @@ export const likePost = asyncHandler(async (req: Request, res: Response) => {
   if (!like) {
     await prisma.like.create({
       data: {
+        // alternative example
         // user: {
         //   connect: {
         //     id: user.id,
@@ -193,5 +210,23 @@ export const likePost = asyncHandler(async (req: Request, res: Response) => {
   }
 });
 
+const getAllPosts = asyncHandler(async (req: Request, res: Response) => {
+  const posts = await prisma.post.findMany({
+    where: {
+      isPublic: true,
+      isDeleted: false,
+    },
+  });
+
+  res.status(200).json({message: "Posts fetched successfully", posts});
+});
+
 // exporting all the functions
-export default {createPost, deletePost, updatePost, getMyPosts, likePost};
+export default {
+  createPost,
+  deletePost,
+  updatePost,
+  getMyPosts,
+  likePost,
+  getAllPosts,
+};

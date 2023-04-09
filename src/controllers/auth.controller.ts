@@ -62,6 +62,11 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * @description Login a user
+ * @access Public
+ * @route  POST /api/v1/users/login
+ */
 const loginUser = asyncHandler(async (req: Request, res: Response) => {
   const {email, password} = req.body;
 
@@ -91,4 +96,21 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
   }
 });
 
-export default Object.assign({}, {registerUser, loginUser});
+const activateUser = asyncHandler(async (req: Request, res: Response) => {
+  const {userId} = req.params;
+
+  const user = await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      isActive: true,
+    },
+  });
+
+  if (user) {
+    res.status(200).json({message: "User activated successfully"});
+  }
+});
+
+export default Object.assign({}, {registerUser, loginUser, activateUser});

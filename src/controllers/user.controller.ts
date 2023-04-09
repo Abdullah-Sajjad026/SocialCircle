@@ -9,13 +9,13 @@ const index = asyncHandler(async (req: Request, res: Response) => {
   res.json({users});
 });
 
+/**
+ * @desc    Get logged in user
+ * @route   GET /api/v1/users/me
+ * @access  Private
+ */
 const getMe = asyncHandler(async (req: Request, res: Response) => {
-  const user = req.body.user;
-
-  // const posts = await prisma.post.findMany({});
-  // const likes = await prisma.like.findMany({});
-
-  // console.log({posts, likes});
+  const {user} = req.body;
 
   const {password, ...resUser} = user;
 
@@ -26,6 +26,11 @@ const getMe = asyncHandler(async (req: Request, res: Response) => {
   });
 });
 
+/**
+ * @desc    Get a user
+ * @route   GET /api/v1/users/:userId
+ * @access  Private
+ */
 const getUser = asyncHandler(async (req: Request, res: Response) => {
   const user = await prisma.user.findUnique({
     where: {
@@ -36,6 +41,11 @@ const getUser = asyncHandler(async (req: Request, res: Response) => {
   res.json({user});
 });
 
+/**
+ * @desc    Update user profile
+ * @route   PUT /api/v1/users/me
+ * @access  Private
+ */
 const updateMe = asyncHandler(async (req: Request, res: Response) => {
   // protect middlewares ensures user on req.body.
   const {user, ...reqBody} = req.body;
@@ -58,6 +68,13 @@ const updateMe = asyncHandler(async (req: Request, res: Response) => {
   });
 });
 
+/**
+ * @desc    Delete user account
+ * @route   DELETE /api/v1/users/me
+ * @access  Private
+ * @todo    Delete all posts and likes of the user
+ *
+ */
 const deleteMe = asyncHandler(async (req: Request, res: Response) => {
   const {user} = req.body;
 
@@ -66,11 +83,22 @@ const deleteMe = asyncHandler(async (req: Request, res: Response) => {
     where: {id: user.id},
   });
 
-  if (deletedUser)
+  if (deletedUser) {
+    // delete user posts
+    await prisma.post.updateMany({
+      data: {isDeleted: true},
+      where: {authorId: user.id},
+    });
+
+    // delete user likes
+    await prisma.like.deleteMany({
+      where: {userId: user.id},
+    });
+
     res
       .status(200)
       .json({status: true, message: "Account deleted successfully"});
-  else throw new Error("Something went wrong");
+  } else throw new Error("Something went wrong");
 });
 
 export default Object.assign(userController, {

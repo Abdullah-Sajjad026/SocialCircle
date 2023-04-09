@@ -12,4 +12,6 @@ router.get("/my-posts", protect, postController.getMyPosts);
 
 router.post("/like/:postId", protect, postController.likePost);
 
+router.get("/all-posts", postController.getAllPosts);
+
 export default router;

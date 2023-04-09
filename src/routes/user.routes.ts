@@ -8,6 +8,8 @@ const router = express.Router();
 router.post("/register", authController.registerUser);
 router.post("/login", authController.loginUser);
 
+router.get("/dev/activate/:userId", authController.activateUser);
+
 router.get("/me", protect, userController.getMe);
 router.put("/me", protect, userController.updateMe);
 router.delete("/me", protect, userController.deleteMe);
