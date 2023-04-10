@@ -1,6 +1,6 @@
-# SocialCirlce
+# SocialCircle
 
-SocialCirlce is a social networking platform where users can create posts, like and comment on them, and connect with other users.
+SocialCircle is a social networking platform where users can create posts, like and comment on them, and connect with other users.
 
 ## Getting Started
 
