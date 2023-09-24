@@ -16,7 +16,7 @@ To get started with the project, you can follow these steps:
    SERVER_PORT=8080  
    JWT_SECRET_KEY=mysecretkey  
    NODE_ENV=dev  
-   DATABASE_URL="file:./dev.db"
+   DATABASE_URL=your_db_connection_string_here
 
 4. Start the server:  
    npm run start:dev
@@ -55,8 +55,9 @@ The following technologies were used in the project:
 
 - Node.js
 - Express.js
+- Typescript
 - Prisma ORM
-- SQLite
+- PlanetScale MySQL
 
 ## License
 
