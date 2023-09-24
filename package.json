@@ -2,10 +2,11 @@
   "name": "prisma-crud",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start:dev": "ts-node-dev --respawn --transpile-only --exit-child src/server.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "start:prod": "npm run build && node build/server.js"
   },
   "keywords": [],
   "author": "",
