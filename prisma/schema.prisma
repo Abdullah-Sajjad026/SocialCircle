@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model User {
@@ -34,6 +35,8 @@ model Post {
   authorId String @map("author_id")
   author   User   @relation(fields: [authorId], references: [id])
   likes    Like[]
+
+  @@index([authorId])
 }
 
 model Like {
@@ -44,51 +47,7 @@ model Like {
   post      Post     @relation(fields: [postId], references: [id])
   userId    String   @map("user_id")
   user      User     @relation(fields: [userId], references: [id])
+
+  @@index([postId])
+  @@index([userId])
 }
-
-// model User {
-//   id    String @id @default(cuid())
-//   fName String @map("first_name")
-//   lName String @map("last_name")
-//   car   Car?
-
-//   friendId String? @unique @map("friend_id")
-//   friend   User?   @relation("Friend", fields: [friendId], references: [id])
-//   friendOf User?   @relation("Friend")
-
-//   carBlogs CarBlog[]
-
-//   @@map("user")
-// }
-
-// model Car {
-//   id     String  @id @default(cuid())
-//   color  String
-//   bought Boolean @default(false)
-//   name   String
-//   userId String  @unique @map("user_id")
-//   user   User    @relation(fields: [userId], references: [id])
-
-//   @@map("car")
-// }
-
-// model CarBlog {
-//   id        String   @id @default(cuid())
-//   content   String
-//   createdAt DateTime @default(now()) @map("created_at")
-
-//   userId String @map("user_id")
-//   user   User   @relation(fields: [userId], references: [id])
-
-//   categories CarBlogCategory[]
-
-//   @@map("carblog")
-// }
-
-// model CarBlogCategory {
-//   id       String    @id @default(cuid())
-//   name     String
-//   carBlogs CarBlog[]
-
-//   @@map("carblog_category")
-// }
